@@ -1,0 +1,19 @@
+CHIP compareLogic{
+    IN in[16];
+    OUT 
+        isZero, //True if == 0
+        isGreaterThanZero, // True if > 0 
+        isLessThanZero; // true if < 0
+
+    PARTS:
+        Or8Way(in=in[0..7], out=firstHalf);
+        Or8Way(in=in[8..15], out=secondHalf);
+
+        Or(a=firstHalf, b=secondHalf, out=notZero);
+        Not(in=notZero, out=isZero);
+
+        And(a=notZero, b=in[15], out=isLessThanZero);
+
+        Not(in=in[15], out=firstBit0);
+        And(a=notZero, b=firstBit0, out=isGreaterThanZero);        
+}

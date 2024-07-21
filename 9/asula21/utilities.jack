@@ -1,0 +1,27 @@
+class utilities{
+    function int pow(int base, int exp){
+        var int retVal;
+        var int loop;
+
+        let retVal = 1;
+        while(loop < exp){
+            let retVal = retVal*base;
+
+            let loop = loop + 1;
+        }
+        return retVal;
+    }
+
+    function int rem(int base, int divisor){
+        var int div;
+        var int retVal;
+        
+        let retVal = base;
+        let div = Math.divide(base, divisor);
+        while(div > 0){
+            let retVal = retVal - divisor;
+            let div = div - 1;
+        }
+        return retVal;
+    }
+}

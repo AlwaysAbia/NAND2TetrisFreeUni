@@ -1,0 +1,22 @@
+CHIP PCLogic{
+    IN  jumpIns[3],
+        isCType,
+        ALUout[16];
+
+    OUT PCLoad,
+        PCInc;
+
+    PARTS:
+        compareLogic(in = ALUout, isZero = isZero, isGreaterThanZero = isGreaterThanZero, isLessThanZero = isLessThanZero);
+        
+        //001 011 101 111
+        And(a=isGreaterThanZero, b=jumpIns[0], out=JGT);
+        //100 101 110 11
+        And(a=isLessThanZero, b=jumpIns[2], out=JLT);
+        //010 011 110 111
+        And(a=isZero, b=jumpIns[1], out=JEQ);
+
+        Or8Way(in[0]=JEQ, in[1]=JLT, in[2]=JGT, in[3..7]=false, out=JumpOrNah);
+        And(a=isCType, b=JumpOrNah, out=load, out = PCLoad);
+        Not(in=load, out=PCInc);
+}   

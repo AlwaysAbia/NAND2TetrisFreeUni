@@ -1,0 +1,42 @@
+class antGameScreen{
+    field int test;
+    field int test2;
+
+    constructor antGameScreen new(){
+        let test = 0;
+        let test2 = 0;
+        return this;
+    }
+
+    //Expected that row and col is withing bounds
+    method boolean checkPixel(int row, int col){
+        var int mem;
+        var int color;
+        var int r;
+        var int pow;
+        let mem = 16384 + (Math.multiply(32, row) + Math.divide(col, 16));
+        let color = Memory.peek(mem);
+
+        let r = utilities.rem(col, 16);
+        let pow = utilities.pow(2, r);
+
+        if((color & pow) = 0){
+            return false; //White
+        }else{
+            return true; //Black
+        }
+    }
+
+    //Expected that row and col is withing bounds
+    method void paintPixel(int row, int col, boolean color){
+        do Screen.setColor(color);
+        do Screen.drawPixel(col, row);
+
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

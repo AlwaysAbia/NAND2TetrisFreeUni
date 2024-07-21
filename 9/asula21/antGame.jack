@@ -1,0 +1,118 @@
+class antGame{
+    field int direction;// the Ant's current direction: 
+                        // 0=up, 1=right, 2=down, 3=left
+    field int row;
+    field int col;
+    field antGameScreen gameScreen;
+    field int stepCount;
+
+
+    constructor antGame new(){
+        let gameScreen = antGameScreen.new();
+
+        let direction = 0;
+        let row = 0;
+        let col = 0;
+        let stepCount = 0;
+
+        return this;
+    }
+
+    method void setup(){
+        let stepCount = 0;
+
+        let direction = Keyboard.readInt("Enter a number for Direction (0 = up, 1 = right, 2 = down, 3 = left): ");
+        let col = Keyboard.readInt("Enter X Position (between 0 and 511 (Inclusive)): ");
+        let row = Keyboard.readInt("Enter Y Position (between 0 and 255 (Inclusive)): ");
+        
+        do Screen.clearScreen();
+        do gameScreen.paintPixel(row, col, true);
+        return;
+    }
+
+    method void dispose(){
+        do gameScreen.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void run(){
+        var boolean pauseState;
+
+        do setup();
+        let pauseState = true;
+        
+        while(true){
+            if(Keyboard.keyPressed() = 32){ //Spacabar
+                let pauseState = ~pauseState;
+            }
+            if(Keyboard.keyPressed() = 82){  //Capital "R"
+                do Output.printString("Steps: ");
+                do Output.printInt(stepCount);
+                do Output.println();
+                do setup();
+            }
+            if((Keyboard.keyPressed() = 0) & (~pauseState)){ //Nothing Pressed, game goes on
+                do gameStep();
+                do Sys.wait(10);
+                let stepCount = stepCount + 1;
+            }
+        }
+        return;
+    }
+
+    method void gameStep(){
+        var boolean currColor;
+        let currColor = gameScreen.checkPixel(row,col);
+        if(currColor){ //If the current pixel is black
+            if(direction = 3){
+                let direction = 0;
+            }else{
+                let direction = direction + 1;
+            }
+            do gameScreen.paintPixel(row,col,~currColor);
+            do move();
+        }else{ // If the current pixel is white
+            if(direction = 0){
+                let direction = 3;
+            }else{
+                let direction = direction - 1;
+            }
+            do gameScreen.paintPixel(row,col,~currColor);
+            do move();
+        }
+        return;
+    }
+
+    method void move(){
+        if(direction = 0){//Up
+            if(row = 0){
+                let row = 255;
+            }else{
+                let row = row - 1;
+            }
+        }
+        if(direction = 1){//Right
+            if(col = 511){
+                let col = 0;
+            }else{
+                let col = col + 1;
+            }
+        }        
+        if(direction = 2){//Down
+            if(row = 255){
+                let row = 0;
+            }else{
+                let row = row + 1;
+            }
+        }
+        if(direction = 3){//Left
+            if(col = 0){
+                let col = 511;
+            }else{
+                let col = col - 1;
+            }        
+        }
+        return;
+    }
+}
